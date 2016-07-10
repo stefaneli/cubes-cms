@@ -26,7 +26,7 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
            }
         }
         
-          /**
+        /**
          * 
          * @param int $id
          * @param array $member Associative array with keys as colom names and values as colom new values
@@ -43,7 +43,7 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
         }
         
         /**
-         * @param array $user Associative array with keys as colom names and values as colom new values
+         * @param array $member Associative array with keys as colom names and values as colom new values
          * @return int The ID of the new created member (autoincrement)
          */
         public function insertMember($member){

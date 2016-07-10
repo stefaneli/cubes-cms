@@ -10,7 +10,17 @@ class ServicesController extends Zend_Controller_Action
 
     public function indexAction()
     {
-        // action body
+        $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
+        
+        $select = $cmsServicesDbTable->select();
+        
+        $select->where('status = ?', Application_Model_DbTable_CmsServices::STATUS_ENABLED)
+                ->order('order_number');
+        
+        $services = $cmsServicesDbTable->fetchAll($select);
+        
+        $this->view->service = $services;
+        
     }
 
 
