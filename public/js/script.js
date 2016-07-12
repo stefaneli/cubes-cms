@@ -20,7 +20,7 @@ $(document).ready(function() {
     selector: "a[class*=_popover]",
     trigger: "hover"
   });
-
+ 
   // colour switch
   // ----------------------------------------------------------------
   $('.colour-switcher a').click(function() {

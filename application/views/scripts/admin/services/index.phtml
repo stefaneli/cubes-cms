@@ -46,7 +46,7 @@ $this->headTitle('Services');
                             <td class="text-center"><i class="<?php echo $service['icon'] ;?>"></i></td>
                             <td class="text-center"><span class="badge alert-danger" title="disabled"><i class="glyphicon glyphicon-remove"></i></span></td>
                             <td><?php echo $this->escape($service['title']); ?></td>
-                            <td><?php echo $this->escape($service['description']); ?></td>
+                            <td><span data-toggle="popover" data-placement="left" rel="popover" data-container="body" data-content="<?php echo $this->escape($service['description']); ?>"><?php echo $this->escape(mb_substr($service['description'], 0, 20) . "..."); ?></span></td>
                             <td class="text-center">
                                 <div class="btn-group btn-group-sm" role="group" aria-label="...">
                                     <a 
@@ -64,7 +64,7 @@ $this->headTitle('Services');
                             <td class="text-center"><i class="<?php echo $service['icon'] ;?>"></i></td>
                             <td class="text-center"><span class="badge alert-success" title="enabled"><i class="glyphicon glyphicon-ok"></i></span></td>
                             <td><?php echo $this->escape($service['title']); ?></td>
-                            <td><?php echo $this->escape($service['description']); ?></td>
+                            <td><span data-toggle="popover" data-placement="left" rel="popover" data-container="body" data-content="<?php echo $this->escape($service['description']); ?>"><?php echo $this->escape(mb_substr($service['description'], 0, 20) . "..."); ?></span></td>
                            <td class="text-center">
                                 <div class="btn-group btn-group-sm" role="group" aria-label="...">
                                     <a 

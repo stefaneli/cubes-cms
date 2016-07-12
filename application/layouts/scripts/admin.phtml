@@ -118,7 +118,17 @@ $user = Zend_Auth::getInstance()->getIdentity();
 
     <!-- Custom Theme JavaScript -->
     <script src="<?php echo $this->baseUrl('/admin/dist/js/sb-admin-2.js'); ?>"></script>
+    
+    <script>
+          $(function () {
+  $('[data-toggle="popover"]').popover({trigger: 'hover'});
+    });
 
+$(function () {
+  $('[data-toggle="tooltip"]').tooltip();
+});
+    </script>
+    
     <?php echo $this->inlineScript();?>
 </body>
 
