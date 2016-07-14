@@ -59,8 +59,8 @@ $this->headTitle('Members');
                                     <a 
                                         href="<?php echo $this->url(array('controller' => 'admin_members', 'action' => 'edit', 'id' => $member['id']), 'default', true); ?>"
                                         type="button" class="btn btn-default" title="edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <button data-memberId="<?php echo $this->escape($member['id']); ?>" data-action="enable" type="button" class="btn btn-default" title="enable"><i class="glyphicon glyphicon-ok"></i></button>
-                                    <button data-memberId="<?php echo $this->escape($member['id']); ?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                    <button data-name="<?php echo $this->escape($member['first_name'] . ' ' . $member['last_name']); ?>" data-memberId="<?php echo $this->escape($member['id']); ?>" data-action="enable" type="button" class="btn btn-default" title="enable"><i class="glyphicon glyphicon-ok"></i></button>
+                                    <button data-name="<?php echo $this->escape($member['first_name'] . ' ' . $member['last_name']); ?>" data-memberId="<?php echo $this->escape($member['id']); ?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -84,8 +84,8 @@ $this->headTitle('Members');
                                     <a 
                                         href="<?php echo $this->url(array('controller' => 'admin_members', 'action' => 'edit', 'id' => $member['id']), 'default', true); ?>"
                                         type="button" class="btn btn-default" title="edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <button data-memberId="<?php echo $this->escape($member['id']); ?>" data-action="disable" type="button" class="btn btn-default" title="disable"><i class="glyphicon glyphicon-remove"></i></button>
-                                    <button data-memberId="<?php echo $this->escape($member['id']); ?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                    <button data-name="<?php echo $this->escape($member['first_name'] . ' ' . $member['last_name']); ?>" data-memberId="<?php echo $this->escape($member['id']); ?>" data-action="disable" type="button" class="btn btn-default" title="disable"><i class="glyphicon glyphicon-remove"></i></button>
+                                    <button data-name="<?php echo $this->escape($member['first_name'] . ' ' . $member['last_name']); ?>" data-memberId="<?php echo $this->escape($member['id']); ?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -108,10 +108,10 @@ $this->headTitle('Members');
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Delete member</h4>
+        <h4 class="modal-title">Delete <span name="name"></span></h4>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete member?</p>
+        <p>Are you sure you want to delete  <span name="name"></span>?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -127,10 +127,10 @@ $this->headTitle('Members');
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Disable member</h4>
+        <h4 class="modal-title">Disable <span name="name"></span></h4>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to disable member?</p>
+        <p>Are you sure you want to disable <span name="name"></span>?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -146,10 +146,10 @@ $this->headTitle('Members');
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Enable member</h4>
+        <h4 class="modal-title">Enable <span name="name"></span></h4>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to enable member?</p>
+          <p>Are you sure you want to enable <span name="name"></span>?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -170,9 +170,13 @@ $('#rows-table').on('click', '[data-action="delete"]', function(e) {
     var memberId = target.attr('data-memberId');
       // get data- attributs
      // var memberId = target.data('memberId');
+     
+    var memberName = target.attr('data-name'); 
     
     
     $('#delete-warning-dialog').find('[name="id"]').val(memberId);
+    
+    $('#delete-warning-dialog').find('[name="name"]').html(memberName);
     
     
     $('#delete-warning-dialog').modal('show');
@@ -190,9 +194,11 @@ $('#rows-table').on('click', '[data-action="disable"]', function(e) {
       // get data- attributs
      // var memberId = target.data('memberId');
     
+    var memberName = target.attr('data-name');
     
     $('#disable-warning-dialog').find('[name="id"]').val(memberId);
     
+    $('#disable-warning-dialog').find('[name="name"]').html(memberName);
     
     $('#disable-warning-dialog').modal('show');
     
@@ -209,9 +215,11 @@ $('#rows-table').on('click', '[data-action="enable"]', function(e) {
       // get data- attributs
      // var memberId = target.data('memberId');
     
+    var memberName = target.attr('data-name');
     
     $('#enable-warning-dialog').find('[name="id"]').val(memberId);
     
+    $('#enable-warning-dialog').find('[name="name"]').html(memberName);
     
     $('#enable-warning-dialog').modal('show');
     
