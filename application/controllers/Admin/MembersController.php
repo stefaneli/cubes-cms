@@ -412,8 +412,6 @@ class Admin_MembersController extends Zend_Controller_Action
                         'action' => 'index'
                         ), 'default', true);
             
-            
-            
         } catch (Application_Model_Exception_InvalidInput $ex) {
              $flashMessenger->addMessage($ex->getMessage(), 'errors');
             
