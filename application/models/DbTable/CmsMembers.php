@@ -87,5 +87,13 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
                 'status' => self::STATUS_DISABLED,
                 ), 'id=' . $id);
         }
+        
+        public function updateMemberOrder($sortedIds) {
+            foreach ($sortedIds as $orderNumber => $id) {
+                 $this->update(array(
+                'order_number' => $orderNumber +1, // +1 because order number starts from 1 not from 0
+                ), 'id=' . $id);
+            }
+        }
 }
 
