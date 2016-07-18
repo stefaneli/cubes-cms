@@ -32,6 +32,14 @@ class Application_Model_DbTable_CmsServices extends Zend_Db_Table_Abstract
          */
         public function insertService($service){
             
+            $select = $this->select();
+            
+            $select->from($this, array(new Zend_Db_Expr('MAX(order_number) AS maxorder')));
+            
+            $lastS = $this->fetchRow($select);
+            
+            $service['order_number'] = $lastS['maxorder'] + 1;
+            
             //fetch order number for new member
             
             $id = $this->insert($service);
@@ -58,11 +66,25 @@ class Application_Model_DbTable_CmsServices extends Zend_Db_Table_Abstract
         
         /**
          * 
-         * @param int $id ID of service to delete
+         * @param array $service Service to delete
          */
-        public function deleteService($id){
+        public function deleteService($service){
             
-            $this->delete('id=' . $id);
+             $select = $this->select();
+            
+            $on = $service['order_number'];
+            
+            $select->where('order_number > ?', $on);
+            
+            $services = $this->fetchAll($select)->toArray();
+            
+             foreach($services as $s) {
+                 $s['order_number'] = $s['order_number'] - 1;
+                 
+                 $this->update($s, 'id = ' . $s['id']);
+             }
+            
+            $this->delete('id=' . $service['id']);
         }
         
          /**

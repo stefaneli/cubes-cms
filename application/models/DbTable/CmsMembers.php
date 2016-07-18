@@ -65,20 +65,14 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
                     
         }
         
+ 
         /**
          * 
-         * @param int $id ID of member to delete
+         * @param array $member Member to delete
          */
-//        public function deleteMember($id){
-//            
-//            $this->delete('id=' . $id);
-//        }
-        
          public function deleteMember($member){
             
             $select = $this->select();
-            
-            //$select->from($this, array(new Zend_Db_Expr('order_number AS orn')))->where('order_number > ?', $member['order_number']);
             
             $on = $member['order_number'];
             

@@ -208,7 +208,7 @@ class Admin_ServicesController extends Zend_Controller_Action
                
             }
 
-            $cmsServicesTable->deleteService($id);
+            $cmsServicesTable->deleteService($service);
 
             $flashMessenger->addMessage('Service ' . $service['title'] . ' has been deleted.', 'success');
 
