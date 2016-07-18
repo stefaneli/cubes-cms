@@ -209,7 +209,7 @@ class Admin_MembersController extends Zend_Controller_Action
                
             }
 
-            $cmsMembersTable->deleteMember($id);
+            $cmsMembersTable->deleteMember($member);
 
             $flashMessenger->addMessage('Member ' . $member['first_name'] . ' ' . $member['last_name'] . ' has been deleted.', 'success');
 

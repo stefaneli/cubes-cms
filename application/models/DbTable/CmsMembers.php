@@ -48,6 +48,14 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
          */
         public function insertMember($member){
             
+            $select = $this->select();
+            
+            $select->from($this, array(new Zend_Db_Expr('MAX(order_number) AS maxorder')));
+            
+            $lastM = $this->fetchRow($select);
+            
+            $member['order_number'] = $lastM['maxorder'] + 1;
+            
             //fetch order number for new member
             
             $id = $this->insert($member);
@@ -61,9 +69,30 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
          * 
          * @param int $id ID of member to delete
          */
-        public function deleteMember($id){
+//        public function deleteMember($id){
+//            
+//            $this->delete('id=' . $id);
+//        }
+        
+         public function deleteMember($member){
             
-            $this->delete('id=' . $id);
+            $select = $this->select();
+            
+            //$select->from($this, array(new Zend_Db_Expr('order_number AS orn')))->where('order_number > ?', $member['order_number']);
+            
+            $on = $member['order_number'];
+            
+            $select->where('order_number > ?', $on);
+            
+            $members = $this->fetchAll($select)->toArray();
+            
+             foreach($members as $m) {
+                 $m['order_number'] = $m['order_number'] - 1;
+                 
+                 $this->update($m, 'id = ' . $m['id']);
+             }
+             
+            $this->delete('id=' . $member['id']);
         }
         
          /**
