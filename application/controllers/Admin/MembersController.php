@@ -403,7 +403,7 @@ class Admin_MembersController extends Zend_Controller_Action
             
             $cmsMembersTable->updateMemberOrder($sortedIds);
             
-            $flashMessenger->addMessage('Order is successfuly saves', 'success');
+            $flashMessenger->addMessage('Order is successfuly saved', 'success');
             
              $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)

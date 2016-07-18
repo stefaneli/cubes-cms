@@ -20,6 +20,8 @@ $this->headTitle('Services');
         <div class="panel panel-default">
             <div class="panel-heading text-right" >
                 <div class="btn-group" role="group" aria-label="...">
+                    <button data-action="save-order" class="btn btn-success" style="display: none;"><i class="glyphicon glyphicon-save"></i> Save order</button>
+                    <button data-action="toggle-sort" class="btn btn-default"><i class="glyphicon glyphicon-list"></i> Change Order</button>
                     <a 
                         href="<?php echo $this->url(array('controller' => 'admin_services', 'action' => 'add'), 'default', true); ?>" 
                         class="btn btn-default"
@@ -30,6 +32,7 @@ $this->headTitle('Services');
                 <table id="rows-table" class="table table-striped table-hover">
                     <thead>
                         <tr>
+                            <th></th>
                             <th class="text-center">Icon</th>
                             <th class="text-center">Status</th>
                             <th>Title</th>
@@ -42,7 +45,8 @@ $this->headTitle('Services');
                             
                             if($service['status'] == Application_Model_DbTable_CmsServices::STATUS_DISABLED){
                                 ?>
-                        <tr class="danger">
+                        <tr data-service-id="<?php echo $this->escape($service['id']); ?>" class="danger">
+                            <td class="text-center"><i data-action="sort" class="glyphicon glyphicon-move" style="display: none; cursor: pointer;"></i></td>
                             <td class="text-center"><i class="<?php echo $service['icon'] ;?>"></i></td>
                             <td class="text-center"><span class="badge alert-danger" title="disabled"><i class="glyphicon glyphicon-remove"></i></span></td>
                             <td><?php echo $this->escape($service['title']); ?></td>
@@ -52,8 +56,8 @@ $this->headTitle('Services');
                                     <a 
                                         href="<?php echo $this->url(array('controller' => 'admin_services', 'action' => 'edit', 'id' => $service['id']), 'default', true); ?>"
                                         type="button" class="btn btn-default" title="edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <button data-serviceTitle="<?php echo $this->escape($service['title']); ?>" data-serviceId="<?php echo $this->escape($service['id']); ?>" data-action="enable" type="button" class="btn btn-default" title="enable"><i class="glyphicon glyphicon-ok"></i></button>
-                                    <button data-serviceTitle="<?php echo $this->escape($service['title']); ?>" data-serviceId="<?php echo $this->escape($service['id']); ?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                    <button data-serviceTitle="<?php echo $this->escape($service['title']); ?>" data-service-id="<?php echo $this->escape($service['id']); ?>" data-action="enable" type="button" class="btn btn-default" title="enable"><i class="glyphicon glyphicon-ok"></i></button>
+                                    <button data-serviceTitle="<?php echo $this->escape($service['title']); ?>" data-service-id="<?php echo $this->escape($service['id']); ?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -61,7 +65,8 @@ $this->headTitle('Services');
                         <?php
                             } else{
                             ?>
-                          <tr>
+                          <tr data-service-id="<?php echo $this->escape($service['id']); ?>">
+                            <td class="text-center"><i data-action="sort" class="glyphicon glyphicon-move" style="display: none; cursor: pointer;"></i></td>
                             <td class="text-center"><i class="<?php echo $service['icon'] ;?>"></i></td>
                             <td class="text-center"><span class="badge alert-success" title="enabled"><i class="glyphicon glyphicon-ok"></i></span></td>
                             <td><?php echo $this->escape($service['title']); ?></td>
@@ -71,8 +76,8 @@ $this->headTitle('Services');
                                     <a 
                                         href="<?php echo $this->url(array('controller' => 'admin_services', 'action' => 'edit', 'id' => $service['id']), 'default', true); ?>"
                                         type="button" class="btn btn-default" title="edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <button data-serviceTitle="<?php echo $this->escape($service['title']); ?>" data-serviceId="<?php echo $this->escape($service['id']); ?>" data-action="disable" type="button" class="btn btn-default" title="disable"><i class="glyphicon glyphicon-remove"></i></button>
-                                    <button data-serviceTitle="<?php echo $this->escape($service['title']); ?>" data-serviceId="<?php echo $this->escape($service['id']); ?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                    <button data-serviceTitle="<?php echo $this->escape($service['title']); ?>" data-service-id="<?php echo $this->escape($service['id']); ?>" data-action="disable" type="button" class="btn btn-default" title="disable"><i class="glyphicon glyphicon-remove"></i></button>
+                                    <button data-serviceTitle="<?php echo $this->escape($service['title']); ?>" data-service-id="<?php echo $this->escape($service['id']); ?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
                                 </div>
                             </td>
                         </tr>
@@ -145,8 +150,23 @@ $this->headTitle('Services');
     </div><!-- /.modal-content -->
   </div><!-- /.modal-dialog -->
 </form><!-- /.modal -->
+<form id="save-order-form" method="post" action="<?php echo $this->url(array('controller' => 'admin_services', 'action' => 'updateorder'), 'default', true); ?>" style="display: none;">
+    <input type="hidden" name="task" value="saveOrder">
+    <input type="hidden" name="sorted_ids" value="">
+    
+</form>
+<?php $this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/jquery-ui-1.12.0/jquery-ui.min.css')); 
+      $this->inlineScript()->appendFile('/admin/bower_components/jquery-ui-1.12.0/jquery-ui.min.js');  ?>
 <script>
 <?php $this->inlineScript()->captureStart(); ?>
+    
+ $(function () {
+            $('[data-toggle="popover"]').popover({trigger: 'hover'});
+              });
+
+$(function () {
+          $('[data-toggle="tooltip"]').tooltip();
+              });    
     
 $('#rows-table').on('click', '[data-action="delete"]', function(e) {
     e.preventDefault();
@@ -154,9 +174,9 @@ $('#rows-table').on('click', '[data-action="delete"]', function(e) {
     
     var target = $(this).is('[data-action="delete"]') ? $(this) : $(this).closest('[data-action="delete"]');
     
-    var serviceId = target.attr('data-serviceId');
+    var serviceId = target.attr('data-service-id');
       // get data- attributs
-     // var memberId = target.data('memberId');
+     // var memberId = target.data('service-id');
      
     var serviceTitle = target.attr('data-serviceTitle');
     
@@ -176,9 +196,9 @@ $('#rows-table').on('click', '[data-action="disable"]', function(e) {
     
     var target = $(this).is('[data-action="disable"]') ? $(this) : $(this).closest('[data-action="disable"]');
     
-    var serviceId = target.attr('data-serviceId');
+    var serviceId = target.attr('data-service-id');
       // get data- attributs
-     // var memberId = target.data('memberId');
+     // var memberId = target.data('service-id');
     
     var serviceTitle = target.attr('data-serviceTitle');
     
@@ -197,9 +217,9 @@ $('#rows-table').on('click', '[data-action="enable"]', function(e) {
     
     var target = $(this).is('[data-action="enable"]') ? $(this) : $(this).closest('[data-action="enable"]');
     
-    var serviceId = target.attr('data-serviceId');
+    var serviceId = target.attr('data-service-id');
       // get data- attributs
-     // var memberId = target.data('memberId');
+     // var memberId = target.data('service-id');
     
     var serviceTitle = target.attr('data-serviceTitle');
     
@@ -209,6 +229,76 @@ $('#rows-table').on('click', '[data-action="enable"]', function(e) {
     
     $('#enable-warning-dialog').modal('show');
     
+});
+
+$('[data-action="toggle-sort"]').on('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    
+    var target = $(this).is('[data-action="toggle-sort"]') ? $(this) : $(this).closest('[data-action="toggle-sort"]');
+    
+    var sortableTbody = $('#rows-table > tbody');
+    
+    if(target.hasClass('active')) {
+        
+        target.removeClass('active');
+        
+        target.html('<i class="glyphicon glyphicon-list"></i> Change order');
+        
+        // destroy sortable functionallity
+        sortableTbody.sortable('destroy');
+        
+        // restore old html into tbody
+        sortableTbody.html(sortableTbody.data('oldHtml'));
+        
+        //hide "handle" for sorting, the icon in first column
+        sortableTbody.find('[data-action="sort"]').hide();
+        
+        // hide Save order button
+        $('[data-action="save-order"').hide();
+        
+        
+    } else {
+        
+        target.addClass('active');
+        // method html sets or gets html inside selected element
+        target.html('<i class="glyphicon glyphicon-remove"></i> Cancel');
+        
+        // save tbody html before sorting under key "oldHtml" into its data
+        sortableTbody.data('oldHtml', sortableTbody.html());
+        
+        sortableTbody.sortable({
+            handle: '[data-action="sort"]'
+        });
+        
+        
+        //show "handle" for sorting, the icon in first column
+        sortableTbody.find('[data-action="sort"]').show();
+        
+        // show Save order button
+        $('[data-action="save-order"').show();
+        
+    }
+});
+
+$('[data-action="save-order"]').on('click', function(e){
+    e.preventDefault();
+    e.stopPropagation();
+    
+    var serviceSortedIds = $('#rows-table > tbody').sortable('toArray', {
+        attribute: 'data-service-id'
+    });
+    
+    // select save order
+    var saveOrderForm = $('#save-order-form');
+    
+    // find element with name "sorted_ids" in save order form and set its value
+    // with string in wich are sorted ids saparated with coma(,)
+    // ex. "12,3,8,5,6,2"
+    saveOrderForm.find('[name="sorted_ids"]').val(serviceSortedIds.join(','));
+    
+    // manually submit form by triggering "submit" event
+    saveOrderForm.trigger('submit');
     
 });
 

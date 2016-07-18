@@ -20,7 +20,7 @@ $this->headTitle('Members');
             <div class="panel-heading text-right" >
                 <div class="btn-group" role="group" aria-label="...">
                     <button data-action="save-order" class="btn btn-success" style="display: none;"><i class="glyphicon glyphicon-save"></i> Save order</button>
-                    <button data-action="toggle-sort" class="btn btn-default"><i class="glyphicon glyphicon-sort"></i> Change Order</button>
+                    <button data-action="toggle-sort" class="btn btn-default"><i class="glyphicon glyphicon-list"></i> Change Order</button>
                     <a 
                         href="<?php echo $this->url(array('controller' => 'admin_members', 'action' => 'add'), 'default', true); ?>" 
                         class="btn btn-default"
@@ -49,7 +49,7 @@ $this->headTitle('Members');
                         <tr data-member-id="<?php echo $this->escape($member['id']); ?>" class="danger">
                             <td class="text-center"><i data-action="sort" class="glyphicon glyphicon-move" style="display: none; cursor: pointer;"></i></td>
                             <td class="text-center"><img style="max-height: 24px;" src="<?php echo $this->memberImgUrl($member); ?>"></td>
-                             <td class="text-center"><span class="badge alert-danger" title="disabled"><i class="glyphicon glyphicon-remove"></i></span></td>
+                            <td class="text-center"><span class="badge alert-danger" title="disabled"><i class="glyphicon glyphicon-remove"></i></span></td>
                             <td><?php echo $this->escape($member['first_name']); ?></td>
                             <td><?php echo $this->escape($member['last_name']); ?></td>
                             <td><?php echo $this->escape($member['work_title']); ?></td>
@@ -179,7 +179,7 @@ $('#rows-table').on('click', '[data-action="delete"]', function(e) {
     
     var target = $(this).is('[data-action="delete"]') ? $(this) : $(this).closest('[data-action="delete"]');
     
-    //var memberId = target.attr('data-memberId');
+    //var memberId = target.attr('data-member-id');
       // get data- attributs
       var memberId = target.data('member-id');
      
@@ -304,7 +304,7 @@ $('[data-action="save-order"]').on('click', function(e){
     // ex. "12,3,8,5,6,2"
     saveOrderForm.find('[name="sorted_ids"]').val(memberSortedIds.join(','));
     
-    // manually submit form by triggering "submit" evvent
+    // manually submit form by triggering "submit" event
     saveOrderForm.trigger('submit');
     
 });    
