@@ -64,14 +64,50 @@ class Admin_MembersController extends Zend_Controller_Action
                 //get form data
                 $formData = $form->getValues();
                 
+                // remove key member_photo from data because there is no column 'member_photo' in cms_members table
+                unset($formData['member_photo']);
                 // do actual task
                 //save to database etc
              
                  // Insertujemo novi zapis u tabelu
                 $cmsMembersTable = new Application_Model_DbTable_CmsMembers();
                 
-                $cmsMembersTable->insertMember($formData);
+                // insert member returns ID of the new member
+                $memberId = $cmsMembersTable->insertMember($formData);
                 
+                
+                
+                if($form->getElement('member_photo')->isUploaded()){
+                
+                    // photo is uploaded
+                    
+                    $fileInfos = $form->getElement('member_photo')->getFileInfo('member_photo');
+                    $fileInfo = $fileInfos['member_photo'];
+                    // $fileInfo = $_FILES['member_phpto'];
+                    
+                    try{
+                        // Open uploaded photo in temporary directory
+                        $memberPhoto = Intervention\Image\ImageManagerStatic::make($fileInfo['tmp_name']);
+                        
+                        $memberPhoto->fit(150, 150);
+                        
+                        $memberPhoto->save(PUBLIC_PATH . '/uploads/members/' . $memberId . '.jpg');
+                        
+                        
+                    } catch (Exception $ex) {
+                        $flashMessenger->addMessage('Member has been saved, but error ocured during image processing', 'errors');
+
+                        //redirect to same or another page
+                        $redirector = $this->getHelper('Redirector');
+                        $redirector->setExit(true)
+                                ->gotoRoute(array(
+                                    'controller' => 'admin_members',
+                                    'action' => 'edit',
+                                    'id' => $memberId
+                                        ), 'default', true);
+                    }
+                    
+                } 
                 
                 //set system message
                 $flashMessenger->addMessage('Member has been saved', 'success');
@@ -143,7 +179,36 @@ class Admin_MembersController extends Zend_Controller_Action
              
                  // Update postojeceg zapisa u tabeli
                 
+                unset($formData['member_photo']);
+                
+                if($form->getElement('member_photo')->isUploaded()){
+                
+                    // photo is uploaded
+                    
+                    $fileInfos = $form->getElement('member_photo')->getFileInfo('member_photo');
+                    $fileInfo = $fileInfos['member_photo'];
+                    // $fileInfo = $_FILES['member_phpto'];
+                    
+                    try{
+                        // Open uploaded photo in temporary directory
+                        $memberPhoto = Intervention\Image\ImageManagerStatic::make($fileInfo['tmp_name']);
+                        
+                        $memberPhoto->fit(150, 150);
+                        
+                        $memberPhoto->save(PUBLIC_PATH . '/uploads/members/' . $member['id'] . '.jpg');
+                        
+                        
+                    } catch (Exception $ex) {
+                        
+                        throw new Application_Model_Exception_InvalidInput('Error ocured during image processing');
+                        
+                    }
+                    
+                }
+                
                 $cmsMembersTable->updateMemberById($member['id'], $formData);
+                
+                
                 
                 
                 //set system message

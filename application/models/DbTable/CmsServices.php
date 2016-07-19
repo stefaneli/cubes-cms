@@ -70,19 +70,23 @@ class Application_Model_DbTable_CmsServices extends Zend_Db_Table_Abstract
          */
         public function deleteService($service){
             
-             $select = $this->select();
+            $this->update(array('order_number' => new Zend_Db_Expr('order_number -  1')), 'order_number > ' . $service['order_number']); 
             
-            $on = $service['order_number'];
-            
-            $select->where('order_number > ?', $on);
-            
-            $services = $this->fetchAll($select)->toArray();
-            
-             foreach($services as $s) {
-                 $s['order_number'] = $s['order_number'] - 1;
-                 
-                 $this->update($s, 'id = ' . $s['id']);
-             }
+//            Ovo je bio moj kod
+//            
+//            $select = $this->select();
+//            
+//            $on = $service['order_number'];
+//            
+//            $select->where('order_number > ?', $on);
+//            
+//            $services = $this->fetchAll($select)->toArray();
+//            
+//             foreach($services as $s) {
+//                 $s['order_number'] = $s['order_number'] - 1;
+//                 
+//                 $this->update($s, 'id = ' . $s['id']);
+//             }
             
             $this->delete('id=' . $service['id']);
         }

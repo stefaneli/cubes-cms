@@ -50,11 +50,25 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
             
             $select = $this->select();
             
-            $select->from($this, array(new Zend_Db_Expr('MAX(order_number) AS maxorder')));
+            // Sort rows by order_number DESCENDING and fetch one row from the top with biggest order number
+            $select->order('order_number DESC');
             
-            $lastM = $this->fetchRow($select);
+            $memberWithBiggestOrderNumber = $this->fetchRow($select);
             
-            $member['order_number'] = $lastM['maxorder'] + 1;
+            if($memberWithBiggestOrderNumber instanceof Zend_Db_Table_Row){
+                $member['order_number'] = $memberWithBiggestOrderNumber['order_number'] + 1;
+            } else {
+                // Table was empty, we are inserting first member
+                $member['order_number'] = 1;
+            }
+            
+//            Ovo je bio moj kod
+//            
+//            $select->from($this, array(new Zend_Db_Expr('MAX(order_number) AS maxorder')));
+//            
+//            $lastM = $this->fetchRow($select);
+//            
+//            $member['order_number'] = $lastM['maxorder'] + 1;
             
             //fetch order number for new member
             
@@ -72,20 +86,24 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
          */
          public function deleteMember($member){
             
-            $select = $this->select();
-            
-            $on = $member['order_number'];
-            
-            $select->where('order_number > ?', $on);
-            
-            $members = $this->fetchAll($select)->toArray();
-            
-             foreach($members as $m) {
-                 $m['order_number'] = $m['order_number'] - 1;
-                 
-                 $this->update($m, 'id = ' . $m['id']);
-             }
+            $this->update(array('order_number' => new Zend_Db_Expr('order_number -  1')), 'order_number > ' . $member['order_number']); 
              
+//            Ovo je bio moj kod
+//            
+//            $select = $this->select();
+//            
+//            $on = $member['order_number'];
+//            
+//            $select->where('order_number > ?', $on);
+//            
+//            $members = $this->fetchAll($select)->toArray();
+//            
+//             foreach($members as $m) {
+//                 $m['order_number'] = $m['order_number'] - 1;
+//                 
+//                 $this->update($m, 'id = ' . $m['id']);
+//             }
+//             
             $this->delete('id=' . $member['id']);
         }
         
