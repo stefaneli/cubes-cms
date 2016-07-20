@@ -197,6 +197,7 @@ class Admin_MembersController extends Zend_Controller_Action
                         
                         $memberPhoto->save(PUBLIC_PATH . '/uploads/members/' . $member['id'] . '.jpg');
                         
+                        //$membecl->clean(Zend_Cache::CLEANING_MODE_ALL);
                         
                     } catch (Exception $ex) {
                         
