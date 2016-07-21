@@ -9,7 +9,7 @@ class Zend_View_Helper_MemberImgUrl extends Zend_View_Helper_Abstract {
      */
     public function memberImgUrl($member) {
 
-        $memberImgFileName = $member['id'] . '.jpg';
+        $memberImgFileName = $member['id'] . '.jpg';  // '-' . date("Y-m-d") .
 
         $memberImgFilePath = PUBLIC_PATH . '/uploads/members/' . $memberImgFileName;
         // Helper ima property view koji je Zend View

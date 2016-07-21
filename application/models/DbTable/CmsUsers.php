@@ -41,8 +41,18 @@ class Application_Model_DbTable_CmsUsers extends Zend_Db_Table_Abstract
             return $this->insert($user);
             
         }
+        
+         /**
+         * 
+         * @param int $id ID of user to delete
+         */
+         public function deleteMember($id){
+          
+            $this->delete('id=' . $id);
+        }
+        
 
-                /**
+        /**
          * 
          * @param int $id
          * @param array $user Associative array with keys as colom names and values as colom new values
@@ -67,6 +77,37 @@ class Application_Model_DbTable_CmsUsers extends Zend_Db_Table_Abstract
              
             $this->update(array('password' => md5($newPassword)),'id = ' . $id);
             
+        }
+        
+        /**
+         * 
+         * @param int $id ID of user to reset password
+         * 
+         */
+        public function resetPassword($id){
+            $this->update(array('password' => md5(self::DEFAULT_PASSWORD)),'id = ' . $id);
+        }
+        
+        /**
+         * 
+         * @param int $id ID of user to disable
+         */
+        public function disableUser($id){
+            
+            $this->update(array(
+                'status' => self::STATUS_DISABLED,
+                ), 'id=' . $id);
+        }
+        
+        /**
+         * 
+         * @param int $id ID of user to enable
+         */
+        public function enableUser($id){
+            
+             $this->update(array(
+                'status' => self::STATUS_ENABLED,
+                ), 'id=' . $id);
         }
 }
 
