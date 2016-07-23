@@ -169,7 +169,7 @@ $this->headTitle('Members');
     
 </form>
 <?php $this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/jquery-ui-1.12.0/jquery-ui.min.css')); 
-      $this->inlineScript()->appendFile('/admin/bower_components/jquery-ui-1.12.0/jquery-ui.min.js');  ?>
+      $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/jquery-ui-1.12.0/jquery-ui.min.js'));  ?>
 <script>
 <?php $this->inlineScript()->captureStart(); ?>
 

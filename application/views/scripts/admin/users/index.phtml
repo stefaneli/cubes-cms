@@ -53,7 +53,7 @@ $this->headTitle('Users');
 										type="button" class="btn btn-default" title="edit"><i class="glyphicon glyphicon-pencil"></i></a>
 									<button data-name="<?php echo $this->escape($user['first_name'] . ' ' . $user['last_name']); ?>" data-user-id="<?php echo $this->escape($user['id']);?>" data-action="enable" type="button" class="btn btn-default" title="enable"><i class="glyphicon glyphicon-ok"></i></button>
 									<button data-name="<?php echo $this->escape($user['first_name'] . ' ' . $user['last_name']); ?>" data-user-id="<?php echo $this->escape($user['id']);?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
-                                                                        <button data-name="<?php echo $this->escape($user['first_name'] . ' ' . $user['last_name']); ?>" data-user-id="<?php echo $this->escape($user['id']);?>" data-action="resetpassword" type="button" class="btn btn-default" title="resetpassword"><i class="fa fa-unlock-alt"></i></button>
+                                                                        <button data-name="<?php echo $this->escape($user['first_name'] . ' ' . $user['last_name']); ?>" data-user-id="<?php echo $this->escape($user['id']);?>" data-action="resetpassword" type="button" class="btn btn-default" title="resetpassword"><i class="glyphicon glyphicon-lock"></i></button>
 								</div>
 							</td>
 						</tr>
@@ -167,6 +167,13 @@ $this->headTitle('Users');
         </div><!-- /.modal-content -->
     </div><!-- /.modal-dialog -->
 </form><!-- /.modal -->
+<?php $this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.css')); 
+      $this->headLink()->appendStylesheet($this->baseUrl('/admin/bower_components/datatables-responsive/css/dataTables.responsive.css'));   
+      $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datatables/media/js/jquery.dataTables.min.js'));
+      $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datatables-plugins/integration/bootstrap/3/dataTables.bootstrap.min.js'));
+      $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/datatables-responsive/js/dataTables.responsive.js')); ?>
+
+    
 <script>
 <?php $this->inlineScript()->captureStart(); ?>
 $('#rows-table').on('click', '[data-action="delete"]', function(e) {
@@ -250,6 +257,16 @@ $('#rows-table').on('click', '[data-action="resetpassword"]', function(e) {
     
     $('#resetpassword-warning-dialog').modal('show');
     
+});
+
+$('#rows-table').dataTable({
+    columnDefs: [
+        { targets: [0, 5], orderable: false, searchable: false}
+    ],
+    order: [
+        [2, 'asc']
+    ],
+    lengthMenu: [3, 5, 10, 20, 50, 100]
 });
 
 <?php $this->inlineScript()->captureEnd(); ?>
