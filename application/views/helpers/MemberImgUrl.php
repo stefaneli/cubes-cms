@@ -16,7 +16,7 @@ class Zend_View_Helper_MemberImgUrl extends Zend_View_Helper_Abstract {
         // i preko kojeg pozivamo ostale view helpere
         // na primer $this->view->baseUrl();
         if (is_file($memberImgFilePath)) {
-            return $this->view->baseUrl('/uploads/members/' . $memberImgFileName);
+            return $this->view->baseUrl('/uploads/members/' . $memberImgFileName . '?' . time()) ;
         } else {
             return $this->view->baseUrl('/uploads/members/no-image.jpg');
         }

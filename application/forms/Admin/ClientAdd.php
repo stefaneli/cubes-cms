@@ -37,7 +37,7 @@ class Application_Form_Admin_ClientAdd extends Zend_Form
                     ))
                 // disable move file to destination when calling method getValues
                 ->setValueDisabled(true)
-                ->setRequired(true);
+                ->addValidator('File_Upload', true, array('messages'=>'You must add an image'));
        
         $clientPhoto->getValidator('Count')->setMessage('You can upload only one file');
         

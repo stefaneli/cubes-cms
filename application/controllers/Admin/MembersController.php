@@ -94,6 +94,7 @@ class Admin_MembersController extends Zend_Controller_Action
                         $memberPhoto->save(PUBLIC_PATH . '/uploads/members/' . $memberId . '.jpg');
                         
                         
+                        
                     } catch (Exception $ex) {
                         $flashMessenger->addMessage('Member has been saved, but error ocured during image processing', 'errors');
 
@@ -277,6 +278,10 @@ class Admin_MembersController extends Zend_Controller_Action
 
             $cmsMembersTable->deleteMember($member);
 
+            
+            // Brisanje slike za obrisanog membera
+            unlink(PUBLIC_PATH . '/uploads/members/' . $member['id'] . '.jpg');
+            
             $flashMessenger->addMessage('Member ' . $member['first_name'] . ' ' . $member['last_name'] . ' has been deleted.', 'success');
 
             $redirector = $this->getHelper('Redirector');
