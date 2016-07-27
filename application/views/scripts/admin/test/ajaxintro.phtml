@@ -47,7 +47,11 @@ Zend_Layout::getMvcInstance()->disableLayout();
             if(brand) {
                 
                 $.ajax({
-                    url: '/uploads/cars/' + brand + '.json',
+                    url: '<?php echo $this->url(array('controller' => 'admin_test', 'action' => 'ajaxmodels'), 'default', true); ?>',
+                    data: {
+                        "brand": brand
+                    },
+                   // method: "post", ovime setujemo metod. Po defaultu je get
                     cache: false 
                     
                 }).done(function(data){

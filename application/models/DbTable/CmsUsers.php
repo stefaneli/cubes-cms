@@ -192,7 +192,7 @@ class Application_Model_DbTable_CmsUsers extends Zend_Db_Table_Abstract
             // reset previously set columns for result - Bilo je SELECT * a mi hocemo COUNT(*)
             $select->reset('columns');
             // set only column/filed to fetch and it is COUNT(*) function
-            $select->columns('COUNT(*) AS total');
+            $select->from($this->_name, 'COUNT(*) AS total');
             
             $row = $this->fetchRow($select);
             

@@ -94,7 +94,18 @@ class Admin_TestController extends Zend_Controller_Action
             throw new Zend_Controller_Router_Exception('Unknow brand', 404);
         }
         
+        $models = $brands[$brand];
         
+        $modelsJson = array();
+        
+        foreach ($models as $modelId => $modelLabel) {
+            $modelsJson[] = array(
+                'value' => $modelId,
+                'label' => $modelLabel
+            );
+        }
+        
+        $this->getHelper('Json')->sendJson($modelsJson);
     }
 
 }

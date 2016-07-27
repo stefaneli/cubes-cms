@@ -10,26 +10,8 @@ class Admin_UsersController extends Zend_Controller_Action
             'errors' => $flashMessenger->getMessages('errors')
         );
         
-       
-        $cmsUsersDbTable = new Application_Model_DbTable_CmsUsers();
         
-        $logedUser = Zend_Auth::getInstance()->getIdentity();
-        
-        $users = $cmsUsersDbTable->search(array(
-                'filters' =>array(
-                    'id_exclude' => $logedUser['id']
-                ),
-//                'orders' => array(
-//                    'status'=> 'ASC',
-//                    'first_name' => 'DESC'
-//                ),
-//                'limit' => 3,
-//                'page' =>2,
-//                
-        ));
-        
-        
-        $this->view->users = $users;
+        $this->view->users = array();
          $this->view->systemMessages = $systemMessages;
     }
     
@@ -449,6 +431,124 @@ class Admin_UsersController extends Zend_Controller_Action
                         ), 'default', true);
         }
         
+    }
+    
+    public function datatableAction(){
+        
+        $request = $this->getRequest();
+        
+        $dataTableParameters = $request->getParams();
+        
+       
+        
+        /*
+         
+         Array
+(
+    [controller] => admin_users
+    [action] => datatable
+    [module] => default
+         
+    [draw] => 2
+    
+    [order] => Array
+        (
+            [0] => Array
+                (
+                    [column] => 2
+                    [dir] => asc
+                )
+
+        )
+
+    [start] => 0
+    [length] => 5
+    [search] => Array
+        (
+            [value] => 
+            [regex] => false
+        )
+
+)
+         */
+        
+        
+        $cmsUsersTable = new Application_Model_DbTable_CmsUsers();
+        
+        $logedinUser = Zend_Auth::getInstance()->getIdentity();
+        
+        $filters = array(
+            'id_exclude' => $logedinUser
+        );
+        $orders = array();
+        $limit = 5;
+        $page = 1;
+        $draw = 1;
+        
+        $columns = array('status', 'username', 'first_name', 'last_name', 'email', 'actions');
+        
+        
+        // Process datatable parameters
+        
+        if(isset($dataTableParameters['draw'])){
+            $draw = $dataTableParameters['draw'];
+            
+            if(isset($dataTableParameters['length'])){
+                
+                // Limit rows per page
+                $limit = $dataTableParameters['length'];
+                
+                if(isset($dataTableParameters['start'])){
+                
+                // Limit rows per page
+                $page = floor($dataTableParameters['start'] / $dataTableParameters['length']) + 1;
+            }
+            }
+            
+             
+            if(
+            isset($dataTableParameters['order'])
+            && is_array($dataTableParameters['order'])
+                    ){
+                foreach($dataTableParameters['order'] as $datatableOrder){
+                   $columnIndex = $datatableOrder['column'];
+                   $orderDirection = strtoupper($datatableOrder['dir']);
+                   
+                   if(isset($columns[$columnIndex])){
+                       $orders[$columns[$columnIndex]] = $orderDirection;
+                   }
+                   
+                }
+            }
+            
+            if(
+                isset($dataTableParameters['search'])
+                && is_array($dataTableParameters['search'])
+                && isset($dataTableParameters['search']['value'])        
+                    ){
+                $filters['username_search'] = $dataTableParameters['search']['value'];
+            }
+            
+            
+        }
+        
+        $users = $cmsUsersTable->search(array(
+            'filters' => $filters,
+            'orders' => $orders,
+            'limit' => $limit,
+            'page' => $page
+        ));
+        
+        
+        $usersFilteredCount = $cmsUsersTable->count($filters);
+        $usersTotal = $cmsUsersTable->count();
+        
+        $this->view->users = $users;
+        $this->view->usersFilteredCount = $usersFilteredCount;
+        $this->view->usersTotal = $usersTotal;
+        $this->view->draw = $draw;
+        $this->view->columns = $columns;
+             
     }
     
 }
