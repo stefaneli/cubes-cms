@@ -267,26 +267,64 @@ class Admin_UsersController extends Zend_Controller_Action
             }
 
             $cmsUsersTable->disableUser($id);
-
-            $flashMessenger->addMessage('User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been disabled.', 'success');
-
-            $redirector = $this->getHelper('Redirector');
-                $redirector->setExit(true)
-                    ->gotoRoute(array(
-                        'controller' => 'admin_users',
-                        'action' => 'index'
-                        ), 'default', true);
-
-
-        } catch (Application_Model_Exception_InvalidInput $ex) {
-            $flashMessenger->addMessage($ex->getMessage(), 'errors');
             
-             $redirector = $this->getHelper('Redirector');
+            $request instanceof Zend_Controller_Request_Http;
+            if($request->isXmlHttpRequest()) {
+                // request is ajax request
+                // send response as json
+                
+                $responseJson = array(
+                    'status' => 'ok',
+                    'statusMessage' => 'User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been disabled.', 'success' 
+                );
+                
+                // send json asresponse
+                $this->getHelper('Json')->sendJson($responseJson);
+                
+            } else {
+                // request is not ajax
+                // send message over session(flashMessenger)
+                // and do redirect
+                
+                $flashMessenger->addMessage('User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been disabled.', 'success');
+
+                $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
-                    ->gotoRoute(array(
-                        'controller' => 'admin_users',
-                        'action' => 'index'
-                        ), 'default', true);
+                        ->gotoRoute(array(
+                            'controller' => 'admin_users',
+                            'action' => 'index'
+                                ), 'default', true);
+            }
+            
+            
+        } catch (Application_Model_Exception_InvalidInput $ex) {
+            
+            if($request->isXmlHttpRequest()){
+                // request is ajax request
+                
+                $responseJson = array(
+                    'status' => 'error',
+                    'statusMessage' =>  $ex->getMessage()
+                );
+                
+                // send json asresponse
+                $this->getHelper('Json')->sendJson($responseJson);
+                
+                
+            } else {
+                
+                // request is not ajax
+                
+                $flashMessenger->addMessage($ex->getMessage(), 'errors');
+
+                $redirector = $this->getHelper('Redirector');
+                $redirector->setExit(true)
+                        ->gotoRoute(array(
+                            'controller' => 'admin_users',
+                            'action' => 'index'
+                                ), 'default', true);
+            }
+            
         }
         
     }
@@ -333,7 +371,7 @@ class Admin_UsersController extends Zend_Controller_Action
 
             $cmsUsersTable->enableUser($id);
 
-            $flashMessenger->addMessage('User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been disabled.', 'success');
+            $flashMessenger->addMessage('User ' . $user['first_name'] . ' ' . $user['last_name'] . ' has been enabled.', 'success');
 
             $redirector = $this->getHelper('Redirector');
                 $redirector->setExit(true)
@@ -478,7 +516,7 @@ class Admin_UsersController extends Zend_Controller_Action
         $logedinUser = Zend_Auth::getInstance()->getIdentity();
         
         $filters = array(
-            'id_exclude' => $logedinUser
+            'id_exclude' => $logedinUser['id']
         );
         $orders = array();
         $limit = 5;
@@ -549,6 +587,21 @@ class Admin_UsersController extends Zend_Controller_Action
         $this->view->draw = $draw;
         $this->view->columns = $columns;
              
+    }
+    
+    public function dashboardAction() {
+        
+            $cmsUsersDbTable = new Application_Model_DbTable_CmsUsers();
+            
+            $total = $cmsUsersDbTable->count();
+        
+            $active = $cmsUsersDbTable->count($filters = array('status' => Application_Model_DbTable_CmsUsers::STATUS_ENABLED));
+        
+         
+            $this->view->total = $total;
+            $this->view->active = $active;
+        
+      
     }
     
 }

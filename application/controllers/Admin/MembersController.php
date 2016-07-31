@@ -500,5 +500,19 @@ class Admin_MembersController extends Zend_Controller_Action
         }
     }
 
+    public function dashboardAction() {
+        
+            $cmsMembersDbTable = new Application_Model_DbTable_CmsMembers();
+            
+            $total = $cmsMembersDbTable->countAll();
+        
+            $active = $cmsMembersDbTable->countActive();
+        
+         
+            $this->view->total = $total;
+            $this->view->active = $active;
+        
+      
+    }
     
 }

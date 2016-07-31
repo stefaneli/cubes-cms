@@ -121,6 +121,31 @@ class Application_Model_DbTable_CmsServices extends Zend_Db_Table_Abstract
             }
         }
         
+        public function countAll() {
+            $select = $this->select();
+            
+             $select->reset('columns');
+            // set only column/filed to fetch and it is COUNT(*) function
+            $select->from($this->_name, 'COUNT(*) AS total');
+            
+            $row = $this->fetchRow($select);
+            
+            return $row['total'];
+        }
+        
+         public function countActive() {
+            $select = $this->select();
+            
+             $select->reset('columns');
+            // set only column/filed to fetch and it is COUNT(*) function
+            $select->from($this->_name, 'COUNT(*) AS active')
+                    ->where('status = ?', self::STATUS_ENABLED);
+            
+            $row = $this->fetchRow($select);
+            
+            return $row['active'];
+        }
+        
         
 }
 

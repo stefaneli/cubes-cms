@@ -422,5 +422,20 @@ class Admin_ServicesController extends Zend_Controller_Action
                         ), 'default', true);
         }
     }
+    
+    public function dashboardAction() {
+        
+            $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
+            
+            $total = $cmsServicesDbTable->countAll();
+        
+            $active = $cmsServicesDbTable->countActive();
+        
+         
+            $this->view->total = $total;
+            $this->view->active = $active;
+        
+      
+    }
 
 }

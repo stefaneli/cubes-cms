@@ -489,4 +489,19 @@ class Admin_ClientsController extends Zend_Controller_Action
     }
 
     
+    public function dashboardAction() {
+        
+            $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
+            
+            $total = $cmsClientsDbTable->countAll();
+        
+            $active = $cmsClientsDbTable->countActive();
+        
+         
+            $this->view->total = $total;
+            $this->view->active = $active;
+        
+      
+    }
+    
 }
