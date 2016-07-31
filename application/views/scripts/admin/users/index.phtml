@@ -36,7 +36,7 @@ $this->headTitle('Users');
 						</tr>
 					</thead>
 					<tbody>
-						<?php /* // Posto smo sada u kontroleru UserController stavili da nam je $user prazen niz
+						<?php /* // Posto smo sada u kontroleru UserController stavili da nam je $users prazen niz
                                                       // onda nam se ovaj deo html-a ispod nece izvrsit jer prolazimo kroz prazan niz
                                                       // ovaj deo koda sada dobijamo preko ajax-a
 						foreach ($this->users as $user) {
@@ -336,5 +336,149 @@ $('#disable-warning-dialog').on('submit', function(e) {
         });
     });
 
+
+    $('#enable-warning-dialog').on('submit', function(e) {
+        e.preventDefault(); // stop manual form submit
+        
+        var target = $(this).is('#enable-warning-dialog') ? $(this) : $(this).closest('#enable-warning-dialog');
+        
+        $.ajax({
+            
+            // url: target.attr('action'),
+            url: '<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'enable'), 'default', true) ?>',
+            method: 'post',
+            data: {
+                task: 'enable',
+                id: target.find('[name="id"]').val()
+            }
+            
+        }).done(function(data){
+            
+            if(data['status'] === 'ok') {
+                
+            var messageBox = $('[data-container="message-box-success"]').last().clone(true);    
+            
+            messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+             
+            $('#system-messages-container').append(messageBox);
+            
+            } else {
+               
+            var messageBox = $('[data-container="message-box-error"]').last().clone(true);    
+            
+            messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+             
+            $('#system-messages-container').append(messageBox);
+            
+            }
+            
+        }).fail(function(){
+            // error in communication with server
+            
+            alert('Error: Server returned error.');
+        
+        }).always(function(){
+            target.modal('hide');
+            
+            // refreshes the table key selected page 
+            $('#rows-table').DataTable().draw(false);
+        });
+    });
+    
+    $('#delete-warning-dialog').on('submit', function(e) {
+        e.preventDefault(); // stop manual form submit
+        
+        var target = $(this).is('#delete-warning-dialog') ? $(this) : $(this).closest('#delete-warning-dialog');
+        
+        $.ajax({
+            
+            // url: target.attr('action'),
+            url: '<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'delete'), 'default', true) ?>',
+            method: 'post',
+            data: {
+                task: 'delete',
+                id: target.find('[name="id"]').val()
+            }
+            
+        }).done(function(data){
+            
+            if(data['status'] === 'ok') {
+                
+            var messageBox = $('[data-container="message-box-success"]').last().clone(true);    
+            
+            messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+             
+            $('#system-messages-container').append(messageBox);
+            
+            } else {
+               
+            var messageBox = $('[data-container="message-box-error"]').last().clone(true);    
+            
+            messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+             
+            $('#system-messages-container').append(messageBox);
+            
+            }
+            
+        }).fail(function(){
+            // error in communication with server
+            
+            alert('Error: Server returned error.');
+        
+        }).always(function(){
+            target.modal('hide');
+            
+            // refreshes the table key selected page 
+            $('#rows-table').DataTable().draw(false);
+        });
+    });
+    
+    $('#resetpassword-warning-dialog').on('submit', function(e) {
+        e.preventDefault(); // stop manual form submit
+        
+        var target = $(this).is('#resetpassword-warning-dialog') ? $(this) : $(this).closest('#resetpassword-warning-dialog');
+        
+        $.ajax({
+            
+            // url: target.attr('action'),
+            url: '<?php echo $this->url(array('controller' => 'admin_users', 'action' => 'resetpassword'), 'default', true) ?>',
+            method: 'post',
+            data: {
+                task: 'resetpassword',
+                id: target.find('[name="id"]').val()
+            }
+            
+        }).done(function(data){
+            
+            if(data['status'] === 'ok') {
+                
+            var messageBox = $('[data-container="message-box-success"]').last().clone(true);    
+            
+            messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+             
+            $('#system-messages-container').append(messageBox);
+            
+            } else {
+               
+            var messageBox = $('[data-container="message-box-error"]').last().clone(true);    
+            
+            messageBox.find('[data-container="message-text"]').text(data['statusMessage']);
+             
+            $('#system-messages-container').append(messageBox);
+            
+            }
+            
+        }).fail(function(){
+            // error in communication with server
+            
+            alert('Error: Server returned error.');
+        
+        }).always(function(){
+            target.modal('hide');
+            
+            // refreshes the table key selected page 
+            $('#rows-table').DataTable().draw(false);
+        });
+    });
 <?php $this->inlineScript()->captureEnd(); ?>
 </script>
