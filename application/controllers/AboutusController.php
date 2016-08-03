@@ -50,8 +50,19 @@ class AboutusController extends Zend_Controller_Action
             throw new Zend_Controller_Router_Exception('No member is found for id' . $id, 404);
         }
         
+       // $memberSlug = $request->getParam('member_slug');
         
         $member = $foundMembers[0];
+        
+//         if(empty($memberSlug)) {
+//            
+//            $redirector = $this->getHelper('Redirector');
+//            $redirector->setExit(true)
+//                    ->gotoRoute(array(
+//                        'id' => $member['id'],
+//                        'member_slug' => $member['first_name'] . '-' . $member['last_name']
+//                            ), 'member-route', true);
+//        }
         
         // Fetching all other members
         

@@ -1,18 +1,19 @@
 <?php
 
-class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
+class Application_Model_DbTable_CmsSitemapPages extends Zend_Db_Table_Abstract
 {
     const STATUS_ENABLED = 1;
     const STATUS_DISABLED = 0;
-
-        protected $_name = 'cms_members';
-        
-        /**
+    
+    protected $_name = 'cms_sitemap_pages';
+    
+    
+    /**
          * 
          * @param int $id
-         * @return null|array Associative array with keys as cms_members table columns or NULL if not found
+         * @return null|array Associative array with keys as cms_sitemap_pages table columns or NULL if not found
          */
-        public function getMemberById($id){
+        public function getSitemapPageById($id){
             $select = $this->select();
             $select->where('id = ?', $id);
 
@@ -29,50 +30,41 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
         /**
          * 
          * @param int $id
-         * @param array $member Associative array with keys as colom names and values as colom new values
+         * @param array $sitemapPage Associative array with keys as colom names and values as colom new values
          */
-        public function updateMemberById($id, $member){
+        public function updateSitemapPageById($id, $sitemapPage){
             
-            if(isset($member['id'])){
+            if(isset($sitemapPage['id'])){
                 // forbid changing of user id
-                unset($member['id']);
+                unset($sitemapPage['id']);
             }
             
-            $this->update($member, 'id = ' . $id);
+            $this->update($sitemapPage, 'id = ' . $id);
             
         }
         
         /**
-         * @param array $member Associative array with keys as colom names and values as colom new values
-         * @return int The ID of the new created member (autoincrement)
+         * @param array $sitemapPage Associative array with keys as colom names and values as colom new values
+         * @return int The ID of the new created sitemapPage (autoincrement)
          */
-        public function insertMember($member){
+        public function insertSitemapPage($sitemapPage){
             
             $select = $this->select();
             
             // Sort rows by order_number DESCENDING and fetch one row from the top with biggest order number
-            $select->order('order_number DESC');
+            $select->where('parent_id = ?', $sitemapPage['parent_id'])
+                    ->order('order_number DESC');
             
-            $memberWithBiggestOrderNumber = $this->fetchRow($select);
+            $sitemapPageWithBiggestOrderNumber = $this->fetchRow($select);
             
-            if($memberWithBiggestOrderNumber instanceof Zend_Db_Table_Row){
-                $member['order_number'] = $memberWithBiggestOrderNumber['order_number'] + 1;
+            if($sitemapPageWithBiggestOrderNumber instanceof Zend_Db_Table_Row){
+                $sitemapPage['order_number'] = $sitemapPageWithBiggestOrderNumber['order_number'] + 1;
             } else {
-                // Table was empty, we are inserting first member
-                $member['order_number'] = 1;
+                // Table was empty, we are inserting first sitemapPage
+                $sitemapPage['order_number'] = 1;
             }
             
-//            Ovo je bio moj kod
-//            
-//            $select->from($this, array(new Zend_Db_Expr('MAX(order_number) AS maxorder')));
-//            
-//            $lastM = $this->fetchRow($select);
-//            
-//            $member['order_number'] = $lastM['maxorder'] + 1;
-            
-            //fetch order number for new member
-            
-            $id = $this->insert($member);
+            $id = $this->insert($sitemapPage);
             
             return $id;
                     
@@ -82,36 +74,26 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
  
         /**
          * 
-         * @param array $member Member to delete
+         * @param array $sitemapPage SitemapPage to delete
          */
-         public function deleteMember($member){
-            
-            $this->update(array('order_number' => new Zend_Db_Expr('order_number -  1')), 'order_number > ' . $member['order_number']); 
+         public function deleteSitemapPage($sitemapPage){
              
-//            Ovo je bio moj kod
-//            
-//            $select = $this->select();
-//            
-//            $on = $member['order_number'];
-//            
-//            $select->where('order_number > ?', $on);
-//            
-//            $members = $this->fetchAll($select)->toArray();
-//            
-//             foreach($members as $m) {
-//                 $m['order_number'] = $m['order_number'] - 1;
-//                 
-//                 $this->update($m, 'id = ' . $m['id']);
-//             }
-//             
-            $this->delete('id=' . $member['id']);
+             
+            
+            $this->update(array(
+                'order_number' => new Zend_Db_Expr('order_number -  1')
+                ), 
+                    'order_number > ' . $sitemapPage['order_number'] . ' AND parent_id = ' . $sitemapPage['parent_id']); 
+ 
+            
+            $this->delete('id=' . $sitemapPage['id']);
         }
         
          /**
          * 
-         * @param int $id ID of member to enable
+         * @param int $id ID of sitemapPage to enable
          */
-        public function enableMember($id){
+        public function enableSitemapPage($id){
             
              $this->update(array(
                 'status' => self::STATUS_ENABLED,
@@ -120,47 +102,22 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
         
         /**
          * 
-         * @param int $id ID of member to disable
+         * @param int $id ID of sitemapPage to disable
          */
-        public function disableMember($id){
+        public function disableSitemapPage($id){
             
             $this->update(array(
                 'status' => self::STATUS_DISABLED,
                 ), 'id=' . $id);
         }
         
-        public function updateMemberOrder($sortedIds) {
+        public function updateSitemapPageOrder($sortedIds) {
+            
             foreach ($sortedIds as $orderNumber => $id) {
                  $this->update(array(
                 'order_number' => $orderNumber +1, // +1 because order number starts from 1 not from 0
                 ), 'id=' . $id);
             }
-        }
-        
-        
-        public function countAll() {
-            $select = $this->select();
-            
-             $select->reset('columns');
-            // set only column/filed to fetch and it is COUNT(*) function
-            $select->from($this->_name, 'COUNT(*) AS total');
-            
-            $row = $this->fetchRow($select);
-            
-            return $row['total'];
-        }
-        
-         public function countActive() {
-            $select = $this->select();
-            
-             $select->reset('columns');
-            // set only column/filed to fetch and it is COUNT(*) function
-            $select->from($this->_name, 'COUNT(*) AS active')
-                    ->where('status = ?', self::STATUS_ENABLED);
-            
-            $row = $this->fetchRow($select);
-            
-            return $row['active'];
         }
         
         /**
@@ -199,12 +156,13 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
                     switch ($field) {
                         
                         case "id":
-                        case "first_name":
-                        case "last_name":
-                        case "email":
+                        case "short_title":
+                        case "url_slug":
+                        case "title":
+                        case "parent_id":
+                        case "type":
+                        case "order_number":    
                         case "status":
-                        case "order_number": 
-                        case "work_title":    
                             
                             if($orderDirection === 'DESC'){
                                 $select->order($field . ' DESC');
@@ -269,11 +227,13 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
                     switch ($field) {
                         
                         case "id":
-                        case "first_name":
-                        case "last_name":
-                        case "email":
+                        case "short_title":
+                        case "url_slug":
+                        case "title":
+                        case "parent_id":
+                        case "type":
+                        case "order_number":    
                         case "status":
-                        case "work_title":
                             
                             if(is_array($value)){
                                 $select->where($field . ' IN (?)', $value);
@@ -281,20 +241,25 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
                                 $select->where($field . ' = ?', $value);
                             }
                             break;
+                        
+                        case "short_title_search":   
                             
-                        case "first_name_search":   
-                            
-                            $select->where('first_name LIKE ?', '%' . $value . '%');
+                            $select->where('short_title LIKE ?', '%' . $value . '%');
                             break;
                         
-                        case "last_name_search":   
+                        case "title_search":   
                             
-                            $select->where('last_name LIKE ?', '%' . $value . '%');
+                            $select->where('title LIKE ?', '%' . $value . '%');
                             break;
                         
-                        case "email_search":   
+                        case "description_search":   
                             
-                            $select->where('email LIKE ?', '%' . $value . '%');
+                            $select->where('description LIKE ?', '%' . $value . '%');
+                            break;
+                        
+                        case "body_search":   
+                            
+                            $select->where('body LIKE ?', '%' . $value . '%');
                             break;
                         
                         case 'id_exclude':
@@ -306,11 +271,37 @@ class Application_Model_DbTable_CmsMembers extends Zend_Db_Table_Abstract
                             }
                             
                             break;
-                         
+                        
                     }
                 }
         }
-
         
+        /**
+         * 
+         * @param int $id Id of the sitemap page
+         * @return array Sitemap page rows in path
+         */
+        public function getSitemapPageBreadcrumbs($id) {
+            
+            $sitemapPageBreadcrumbs = array();
+           
+            while ($id > 0) {
+               
+                $sitemapPageInPath = $this->getSitemapPageById($id);
+                
+                if($sitemapPageInPath) {
+                    
+                    $id = $sitemapPageInPath['parent_id'];
+                    
+                    array_unshift($sitemapPageBreadcrumbs, $sitemapPageInPath);
+                    
+                } else {
+                    $id = 0;
+                }
+            }
+            
+            
+            return $sitemapPageBreadcrumbs;
+        }
+    
 }
-

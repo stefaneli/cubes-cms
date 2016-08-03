@@ -15,17 +15,16 @@ class Admin_MembersController extends Zend_Controller_Action
         
         $cmsMembersDbTable = new Application_Model_DbTable_CmsMembers();
         
-         
-        // Select je objekat klase Zend_Db_Table
-        $select = $cmsMembersDbTable->select();
-        
-        $select->order('order_number');
-        
-        // debug za db select - vraca se sql upit
-        // die($select->assemble());
-        
-        
-        $members = $cmsMembersDbTable->fetchAll($select);
+        $members = $cmsMembersDbTable->search(array(
+//            'filters' => array(
+//                'first_name' => array('Aleksandar', 'Aleksandra', 'Bojan')
+//            ),
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+//            'limit' => 4,
+//            'page' => 2
+        ));
         
         $this->view->members = $members;
         $this->view->systemMessages = $systemMessages;
@@ -504,9 +503,11 @@ class Admin_MembersController extends Zend_Controller_Action
         
             $cmsMembersDbTable = new Application_Model_DbTable_CmsMembers();
             
-            $total = $cmsMembersDbTable->countAll();
+            $total = $cmsMembersDbTable->count();
         
-            $active = $cmsMembersDbTable->countActive();
+            $active = $cmsMembersDbTable->count(array(
+                'status' => Application_Model_DbTable_CmsMembers::STATUS_ENABLED
+            ));
         
          
             $this->view->total = $total;
