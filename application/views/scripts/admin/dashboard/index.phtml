@@ -28,7 +28,7 @@
         cache: false
     }).done(function (data) {
         var members = $('#members');
-        members.append(data);
+        members.html(data);
     }).fail(function () {
         alert('Unable to load data  for members');
     }).always(function () {
@@ -39,7 +39,7 @@
         cache: false
     }).done(function (data) {
         var services = $('#services');
-        services.append(data);
+        services.html(data);
     }).fail(function () {
         alert('Unable to load data  for services');
     }).always(function () {
@@ -50,7 +50,7 @@
         cache: false
     }).done(function (data) {
         var users = $('#users');
-        users.append(data);
+        users.html(data);
     }).fail(function () {
         alert('Unable to load data  for users');
     }).always(function () {
@@ -61,7 +61,7 @@
         cache: false
     }).done(function (data) {
         var clients = $('#clients');
-        clients.append(data);
+        clients.html(data);
     }).fail(function () {
         alert('Unable to load data  for clients');
     }).always(function () {
