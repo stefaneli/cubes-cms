@@ -32,6 +32,9 @@ $this->headTitle("Member - " . $member['first_name'] . ' ' . $member['last_name'
 								<h5>
 									<?php echo $this->escape($member['work_title']); ?>
 								</h5>
+                                                            <h5>
+                                                                <a href="<?php echo $this->contactUrl($member); ?>">Ask Member</a>
+                                                            </h5>
 								<p>
                                                                      <?php echo $this->escape($member['resume']); ?>
                                                                 </p>
@@ -101,8 +104,8 @@ $this->headTitle("Member - " . $member['first_name'] . ' ' . $member['last_name'
 					<div class="col-md-4 sidebar sidebar-right">
 						<div class="inner">
 							<div class="block mdrs">
-								<a class="btn btn-block btn-info" href="#"><i class="fa fa-download"></i> Download Our Press Kit</a>
-								<a class="btn btn-block btn-success" href="#"><i class="fa fa-envelope-o"></i> Get In Touch</a>
+<!--								<a class="btn btn-block btn-info" href="#"><i class="fa fa-download"></i> Download Our Press Kit</a>-->
+								<a class="btn btn-block btn-success" href="<?php echo $this->contactUrl($member); ?>"><i class="fa fa-envelope-o"></i> Ask member</a>
 							</div>
 						</div>
 					</div>
