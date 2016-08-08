@@ -14,18 +14,12 @@ class Admin_ClientsController extends Zend_Controller_Action
         // Prikaz svih membera
         
         $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
-        
-         
-        // Select je objekat klase Zend_Db_Table
-        $select = $cmsClientsDbTable->select();
-        
-        $select->order('order_number');
-        
-        // debug za db select - vraca se sql upit
-        // die($select->assemble());
-        
-        
-        $clients = $cmsClientsDbTable->fetchAll($select);
+       
+        $clients = $cmsClientsDbTable->search(array(
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+        ));
         
         $this->view->clients = $clients;
         $this->view->systemMessages = $systemMessages;
@@ -493,9 +487,11 @@ class Admin_ClientsController extends Zend_Controller_Action
         
             $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
             
-            $total = $cmsClientsDbTable->countAll();
+            $total = $cmsClientsDbTable->count();
         
-            $active = $cmsClientsDbTable->countActive();
+            $active = $cmsClientsDbTable->count(array(
+                'status' => Application_Model_DbTable_CmsMembers::STATUS_ENABLED
+            ));
         
          
             $this->view->total = $total;

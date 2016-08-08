@@ -15,18 +15,12 @@ class Admin_ServicesController extends Zend_Controller_Action
         
         $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
         
-         
-        // Select je objekat klase Zend_Db_Table
-        $select = $cmsServicesDbTable->select();
-        
-        $select->order('order_number');
-        
-        // debug za db select - vraca se sql upit
-        // die($select->assemble());
-        
-        
-        $services = $cmsServicesDbTable->fetchAll($select);
-        
+        $services = $cmsServicesDbTable->search(array(
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+        ));
+  
         $this->view->services = $services;
         $this->view->systemMessages = $systemMessages;
                 
@@ -427,9 +421,11 @@ class Admin_ServicesController extends Zend_Controller_Action
         
             $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
             
-            $total = $cmsServicesDbTable->countAll();
+            $total = $cmsServicesDbTable->count();
         
-            $active = $cmsServicesDbTable->countActive();
+            $active = $cmsServicesDbTable->count(array(
+                'status' => Application_Model_DbTable_CmsMembers::STATUS_ENABLED
+            ));
         
          
             $this->view->total = $total;
