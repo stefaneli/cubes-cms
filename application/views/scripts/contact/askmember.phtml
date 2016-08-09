@@ -23,7 +23,7 @@ $this->headTitle("Contact " . $member['first_name'] . ' ' . $member['last_name']
 					<div class="row">
 						<div class="col-sm-6">
                                                     <div class="row team-member">
-							<div class="col-sm-3">
+                                                        <div class="col-sm-3" style="padding-bottom: 20px;">
 								<img alt="<?php echo $this->escape($member['first_name']); ?>" class="img-polaroid" src="<?php echo $this->memberImgUrl($member); ?>">
                                                                 
 							</div>
@@ -34,7 +34,6 @@ $this->headTitle("Contact " . $member['first_name'] . ' ' . $member['last_name']
 								
 							</div>
 						</div>
-                                                    
 							<form action="#" id="contact-form">
 								<div class="form-group">
 									<input type="text" placeholder="Name" class="form-control">

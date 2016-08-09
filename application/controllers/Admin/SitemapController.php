@@ -174,6 +174,67 @@ class Admin_SitemapController extends Zend_Controller_Action
         $this->view->form = $form;
     }
     
+    public function deleteAction() {
+        
+        $request = $this->getRequest();
+        
+        if (!$request->isPost() || $request->getPost('task') != 'delete') {
+            $redirector = $this->getHelper('Redirector');
+            $redirector->setExit(true)
+                    ->gotoRoute(array(
+                        'controller' => 'admin_sitemap',
+                        'action' => 'index'
+                            ), 'default', true);
+        }
+        $flashMessenger = $this->getHelper('FlashMessenger');
+        
+        try {
+            
+            $id = (int) $request->getPost('id');
+            
+            if ($id <= 0) {
+                throw new Application_Model_Exception_InvalidInput('Invalid sitemap id: ' . $id);
+            }
+            
+            $cmsSitemapPagesTable = new Application_Model_DbTable_CmsSitemapPages();
+            
+            $sitemapPage = $cmsSitemapPagesTable->getSitemapPageById($id);
+            
+            
+            if (empty($sitemapPage)) {
+                throw new Application_Model_Exception_InvalidInput('No sitemap is found with id: ' . $id);
+            }
+            
+            
+            $cmsSitemapPagesTable->deleteSitemapPage($id);
+            
+            $flashMessenger->addMessage('Page ' . $sitemapPage['short_title'] .  ' has been deleted', 'success');
+            
+            //redirect on another page
+            $redirector = $this->getHelper('Redirector');
+            $redirector->setExit(true)
+                    ->gotoRoute(array(
+                        'controller' => 'admin_sitemap',
+                        'action' => 'index',
+                        'id' =>$sitemapPage['parent_id']
+                                      ), 'default', true);
+            
+        } catch (Application_Model_Exception_InvalidInput $ex) {
+            
+            $flashMessenger->addMessage($ex->getMessage(), 'errors');
+            //redirect on another page
+            $redirector = $this->getHelper('Redirector');
+            $redirector->setExit(true)
+                    ->gotoRoute(array(
+                        'controller' => 'admin_sitemap',
+                        'action' => 'index',
+                        'id' => $sitemapPage['parent_id']
+                            ), 'default', true);
+        }
+        
+    }
+
+
     public function editAction() {
         
         $request = $this->getRequest();

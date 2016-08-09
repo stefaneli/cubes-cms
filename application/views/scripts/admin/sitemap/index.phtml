@@ -99,7 +99,7 @@ $this->headTitle('Site Map Pages');
 							<td class="text-center">
 								<div class="btn-group btn-group-sm" role="group" aria-label="...">
 									<a 
-										href="#"
+										href="<?php echo $this->sitemapPageUrl($sitemapPage['id']); ?>"
 										target="_blank"
 										type="button" class="btn btn-default" title="preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 									<a 
@@ -110,7 +110,7 @@ $this->headTitle('Site Map Pages');
                                                                                         ), 'default', true); ?>"
 										type="button" class="btn btn-default" title="edit"><i class="glyphicon glyphicon-pencil"></i></a>
 									<button data-name="<?php echo $this->escape($sitemapPage['short_title'] ); ?>" data-sitemap-page-id="<?php echo $this->escape($sitemapPage['id']);?>" data-action="enable" type="button" class="btn btn-default" title="enable"><i class="glyphicon glyphicon-ok"></i></button>
-									<button data-sitemap-page-id="<?php echo $this->escape($sitemapPage['id']);?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
+									<button data-name="<?php echo $this->escape($sitemapPage['short_title'] ); ?>" data-sitemap-page-id="<?php echo $this->escape($sitemapPage['id']);?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
 								
 								</div>
 							</td>
@@ -136,7 +136,7 @@ $this->headTitle('Site Map Pages');
 							<td class="text-center">
 								<div class="btn-group btn-group-sm" role="group" aria-label="...">
 									<a 
-										href="#"
+										href="<?php echo $this->sitemapPageUrl($sitemapPage['id']); ?>"
 										target="_blank"
 										type="button" class="btn btn-default" title="preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 									<a 
@@ -147,7 +147,7 @@ $this->headTitle('Site Map Pages');
                                                                                         ), 'default', true); ?>"
 										type="button" class="btn btn-default" title="edit"><i class="glyphicon glyphicon-pencil"></i></a>
 									<button data-name="<?php echo $this->escape($sitemapPage['short_title'] ); ?>" data-sitemap-page-id="<?php echo $this->escape($sitemapPage['id']);?>" data-action="disable" type="button" class="btn btn-default" title="disable"><i class="glyphicon glyphicon-remove"></i></button>
-									<button data-sitemap-page-id="<?php echo $this->escape($sitemapPage['id']);?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
+									<button data-name="<?php echo $this->escape($sitemapPage['short_title'] ); ?>" data-sitemap-page-id="<?php echo $this->escape($sitemapPage['id']);?>" data-action="delete" type="button" class="btn btn-default" title="delete"><i class="glyphicon glyphicon-trash"></i></button>
 								</div>
 							</td>
 						</tr>
@@ -176,10 +176,10 @@ $this->headTitle('Site Map Pages');
     <div class="modal-content">
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Delete Sitemap Page</h4>
+        <h4 class="modal-title">Delete  <span name="name"></span></h4>
       </div>
       <div class="modal-body">
-        <p>Are you sure you want to delete sitemap page?</p>
+        <p>Are you sure you want to delete  <span name="name"></span>?</p>
       </div>
       <div class="modal-footer">
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
@@ -251,12 +251,15 @@ $this->inlineScript()->appendFile($this->baseUrl('/admin/bower_components/jquery
 		//get any attribute
 		var sitemapPageId = target.attr('data-sitemap-page-id');
 		
+                var sitemapPageName = target.attr('data-name');
 		//get data- attributes
-		var sitemapPageId = target.data('sitemap-page-id');
+		//var sitemapPageId = target.data('sitemap-page-id');
 		
 		
 		//set value for input field with name "id"
 		$('#delete-warning-dialog').find('[name="id"]').val(sitemapPageId);
+                
+                $('#delete-warning-dialog').find('[name="name"]').html(sitemapPageName);
 		
 		$('#delete-warning-dialog').modal('show');
 	});
