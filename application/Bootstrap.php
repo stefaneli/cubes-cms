@@ -56,7 +56,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
                         ));
             }
             
-              if($sitemapPageMap['type'] == 'AboutUSPage'){
+              if($sitemapPageMap['type'] == 'AboutUsPage'){
                 $router->addRoute('static-page-route-' . $sitemapPageId, new Zend_Controller_Router_Route_Static(
                         $sitemapPageMap['url'],
                         array(
