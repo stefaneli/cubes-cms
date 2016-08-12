@@ -1,21 +1,15 @@
-<?php 
-
-//$this->headTitle("About Us");
-
+<?php
 $sitemapPage = $this->sitemapPage;
+//$this->headTitle('About Us');
 $this->headTitle($sitemapPage['title']);
-
 $this->headMeta()->appendName('description', $sitemapPage['description']);
-
-
-?>		
-
-<div id="highlighted">
+?>
+		<div id="highlighted">
 			<div class="container">
 				<div class="header">
 					<h2 class="page-title">
-						<span><?php echo $this->escape($sitemapPage['title']); ?></span> 
-						<small><?php echo $this->escape($sitemapPage['description']); ?></small>
+						<span><?php echo $this->sitemapPage['title']; ;?></span> 
+						<small><?php echo $this->sitemapPage['description'] ;?></small>
 					</h2>
 				</div>
 			</div>
@@ -26,67 +20,56 @@ $this->headMeta()->appendName('description', $sitemapPage['description']);
 				<div class="row">
 					<div class="col-md-8">
 						<!-- About company -->
-						<div class="col-md-8">
-						<!-- About company -->
 						<div class="block">
-                                                    <?php echo $sitemapPage['body']; ?>
+                                                    
+                                                    <?php echo $this->sitemapPage['body'] ;?>
+                                                    
 						</div>
-						<!-- The team -->
-						
-						<!-- Quotes -->
-						
-					</div>
 						<!-- The team -->
 						<div class="block margin-top-large">
 							<h3 id="team" class="block-title">
 								<span>Meet The Team</span>
 							</h3>
-                                                    
 							<div class="row">
 								<ul class="thumbnails list-unstyled team">
-                                                        <?php 
-                                                            
-                                                            $memberCount = 0;
-                                                            
-                                                            foreach ($this->members as $member) {
-                                                                if($memberCount % 4 === 0){
-                                                                ?>
-                                                                </ul>
-                                                        </div>
-                                                        <div class="row">
-								<ul class="thumbnails list-unstyled team">
-                                                          
-                                                         <?php
-                                                            }
-                                                            $memberCount++;
-                                                            
-                                                           
-                                                            
-                                                            $memberImgUrl = $this->memberImgUrl($member);
-                                                           ?>
-                                                                    <li class="col-sm-6 col-md-3">
-                                                                            <a 
-                                                                                href="<?php echo $this->memberUrl($member); ?>"
-                                                                                
-                                                                            >
-                                                                                <img alt="<?php echo $this->escape($member['first_name']); ?>" class="img-polaroid" src="<?php echo $memberImgUrl; ?>">
-                                                                            </a>
-                                                                            <h4>
-                                                                                <a 
-                                                                                    data-original-title="<?php echo $this->escape($member['first_name'] . ' ' . $member['last_name']); ?>" 
-                                                                                    data-content="<?php echo $this->escape($member['work_title']); ?>" 
-                                                                                    class="_popover" 
-                                                                                    href="<?php echo $this->memberUrl($member); ?>"
-                                                                                ><?php echo $this->escape($member['first_name']); ?></a>
-                                                                            </h4>
-                                                                        </li>     
-                                                         <?php
-                                                            
-                                                            }
-                                                        ?>
-                                                                </ul>
+									<?php 
+									$memberCount = 0;
+									
+									foreach ($this->members as $member) {
+										if ($memberCount % 4 === 0) {
+										?>	
+								</ul>
 							</div>
-                                                    
+							<div class="row">
+								<ul class="thumbnails list-unstyled team">
+										<?php 
+										
+										}
+										
+										$memberCount ++;
+										
+										$memberImgUrl = $this->memberImgUrl($member);
+									?>
+									<li class="col-sm-6 col-md-3">
+										<a 
+											href="<?php echo $this->MemberUrl($member);?>"
+										>
+											<img alt="<?php echo $this->escape($member['first_name']);?>" class="img-polaroid" src="<?php echo $memberImgUrl;?>">
+										</a>
+										<h4>
+											<a 
+												data-original-title="<?php echo $this->escape($member['first_name'] . ' ' . $member['last_name']);?>" 
+												data-content="<?php echo $this->escape($member['work_title']);?>" 
+												class="_popover" 
+												href="<?php echo $memberUrl;?>"
+											><?php echo $this->escape($member['first_name']);?></a>
+										</h4>
+									</li>
+									<?php
+									}
+									?>
+								</ul>
+							</div>
 						</div>
 					</div>
 					<!-- sidebar -->
@@ -94,10 +77,10 @@ $this->headMeta()->appendName('description', $sitemapPage['description']);
 						<div class="inner">
 							<div class="block mdrs">
 								<a class="btn btn-block btn-info" href="#"><i class="fa fa-download"></i> Download Our Press Kit</a>
-								<a class="btn btn-block btn-success" href="<?php echo $this->baseUrl('/contact'); ?>"><i class="fa fa-envelope-o"></i> Get In Touch</a>
+								<a class="btn btn-block btn-success" href="<?php echo $this->baseUrl('/contact');?>"><i class="fa fa-envelope-o"></i> Get In Touch</a>
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-		</div>
+</div>
