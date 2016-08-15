@@ -62,6 +62,7 @@ class Admin_SitemapController extends Zend_Controller_Action
             throw new Zend_Controller_Router_Exception('Invalid id for sitemap pages.', 404);
         }
         
+        $parentType = '';
         
         $cmsSitemapPagesDbTable = new Application_Model_DbTable_CmsSitemapPages();
         
@@ -72,6 +73,9 @@ class Admin_SitemapController extends Zend_Controller_Action
             if(!$parentSitemapPage) {
             throw new Zend_Controller_Router_Exception('No sitemap page is found for id: ' . $parentId, 404);
         }
+        
+        $parentType = $parentSitemapPage['type'];
+        
         }
         
         
@@ -83,7 +87,7 @@ class Admin_SitemapController extends Zend_Controller_Action
             'errors' => $flashMessenger->getMessages('errors')
         );
 
-        $form = new Application_Form_Admin_SitemapPageAdd($parentId);
+        $form = new Application_Form_Admin_SitemapPageAdd($parentId, $parentType);
 
         //default form data
         $form->populate(array(
@@ -255,6 +259,14 @@ class Admin_SitemapController extends Zend_Controller_Action
             throw new Zend_Controller_Router_Exception('No sitemap page is found with id: ' . $id, 404);
         }
         
+        $parentType = '';
+        
+        if($sitemapPage['parent_id'] != 0) {
+            
+            $parentSitemapPage = $cmsSitemapPagesTable->getSitemapPageById($sitemapPage['parent_id']);
+            $parentType = $parentSitemapPage['type'];
+        }
+        
         $flashMessenger = $this->getHelper('FlashMessenger');
         
         $systemMessages = array(
@@ -262,7 +274,7 @@ class Admin_SitemapController extends Zend_Controller_Action
             'errors' => $flashMessenger->getMessages('errors')
         );
 
-        $form = new Application_Form_Admin_SitemapPageEdit($sitemapPage['id'], $sitemapPage['parent_id']);
+        $form = new Application_Form_Admin_SitemapPageEdit($sitemapPage['id'], $sitemapPage['parent_id'], $parentType);
 
         //default form data
         $form->populate($sitemapPage);

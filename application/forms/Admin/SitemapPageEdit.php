@@ -2,14 +2,16 @@
 
 class Application_Form_Admin_SitemapPageEdit extends Zend_Form
 {
-    protected $parentID;
-    protected $sitemapPageID;
+    protected $parentId;
+    protected $sitemapPageId;
+    protected $parentType;
 
 
-    public function __construct($sitemapPageID, $parentId, $options = null) {
+    public function __construct($sitemapPageID, $parentId, $parentType, $options = null) {
         
-        $this->sitemapPageID = $sitemapPageID;
-        $this->parentID = $parentId;
+        $this->sitemapPageId = $sitemapPageID;
+        $this->parentId = $parentId;
+        $this->parentType = $parentType;
         
         parent::__construct($options);
     }
@@ -27,13 +29,40 @@ class Application_Form_Admin_SitemapPageEdit extends Zend_Form
 //        Zend_Form_Element_Multiselect;
 //        Zend_Form_Element_MultiCheckbox;
         
+        $sitemapPageTypes = Zend_Registry::get('sitemapPageTypes');
+        $rootSitemapPageTypes = Zend_Registry::get('rootSitemapPageTypes');
+        
+        if($this->parentId == 0) {
+            $parentSubTypes = $rootSitemapPageTypes;
+        } else {
+            $parentSubTypes = $sitemapPageTypes[$this->parentType]['subtypes'];
+        }
+        
+        $cmsSitemapPagesDbTable = new Application_Model_DbTable_CmsSitemapPages();
+        
+        $parentSubtypesCount = $cmsSitemapPagesDbTable->countByTypes(array(
+            'parent_id' => $this->parentId,
+            'id_exclude' => $this->sitemapPageId
+        ));
+        
+        
         $type = new Zend_Form_Element_Select('type');
         $type->addMultiOption('', '-- Select Sitemap Page Type --')
-                ->addMultiOptions(array(
-                            'StaticPage' => 'Static Page',
-                            'AboutUsPage' => 'About Us Page',
-                            'ContactPage' => 'Contact Page', 
-        ))->setRequired(true);
+                ->setRequired(true);
+        
+        foreach ($parentSubTypes as $sitemapPageType => $sitemapPageTypeMax) {
+            
+            $sitemapPageTypeProperties = $sitemapPageTypes[$sitemapPageType];
+            
+            $totalExistingSitemapPagesOfType = isset($parentSubtypesCount[$sitemapPageType]) ? $parentSubtypesCount[$sitemapPageType] : 0 ;
+            
+            if($sitemapPageTypeMax == 0 || $sitemapPageTypeMax > $totalExistingSitemapPagesOfType ) {
+                
+                 $type->addMultiOption($sitemapPageType, $sitemapPageTypeProperties['title']);
+            }
+            
+           
+        }
         
         $this->addElement($type);
         
@@ -43,7 +72,7 @@ class Application_Form_Admin_SitemapPageEdit extends Zend_Form
                 ->addValidator(new Zend_Validate_Db_NoRecordExists(array(
                     'table' => 'cms_sitemap_pages',
                     'field' => 'url_slug',
-                    'exclude' => 'parent_id = ' . $this->parentID . ' AND id != ' . $this->sitemapPageID
+                    'exclude' => 'parent_id = ' . $this->parentId . ' AND id != ' . $this->sitemapPageId
                 )))
                 ->addValidator('StringLength', false, array('min' => 2, 'max' => 255))
                 ->setRequired(true);
