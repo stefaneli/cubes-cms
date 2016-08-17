@@ -1,16 +1,28 @@
-<?php $this->headTitle("Services"); ?>		
+<?php
+
+$sitemapPage = $this->sitemapPage;
+//$this->headTitle('About Us');
+$this->headTitle($sitemapPage['title']);
+$this->headMeta()->appendName('description', $sitemapPage['description']);
+
+?>		
 
 <div id="highlighted">
 			<div class="container">
 				<div class="header">
 					<h2 class="page-title">
-						<span>Services</span> 
-						<small>The services we offer &amp; how we can help you!</small>
+						<span><?php echo $this->sitemapPage['title']; ?></span> 
+						<small><?php echo $this->sitemapPage['description'] ;?></small>
 					</h2>
 				</div>
 			</div>
 		</div>
 		<div id="content">
+                    <div class="container">
+                        
+                        <?php echo $this->sitemapPage['body'] ;?>
+                        
+                    </div>
 			<div class="container">
 				<!-- Services -->
 				<div class="block services">

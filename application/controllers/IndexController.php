@@ -5,7 +5,51 @@ class IndexController extends Zend_Controller_Action
 
     public function init()
     {
-        /* Initialize action controller here */
+        $cmsIndexSlidesDbTable = new Application_Model_DbTable_CmsIndexSlides();
+        
+        $enabledSlides = $cmsIndexSlidesDbTable->search(array(
+            'filters' => array(
+                'status' => Application_Model_DbTable_CmsIndexSlides::STATUS_ENABLED
+            ),
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+//            'limit' => 4,
+//            'page' => 2
+        ));
+        
+        $cmsServicesDbTable = new Application_Model_DbTable_CmsServices();
+        
+        $services = $cmsServicesDbTable->search(array(
+            'filters' => array(
+                'status' => Application_Model_DbTable_CmsServices::STATUS_ENABLED
+            ),
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+            'limit' => 4
+        ));
+        
+        $cmsSitemapDbTable = new Application_Model_DbTable_CmsSitemapPages();
+        
+        $servicesSitemapPages = $cmsSitemapDbTable->search(array(
+            'filters' => array(
+                'status' => Application_Model_DbTable_CmsSitemapPages::STATUS_ENABLED,
+                'type' => 'ServicesPage'
+            ),
+            'limit' => 1,
+//            'page' => 1
+        ));
+        
+        $servicesSitemapPage = !empty($servicesSitemapPages) ? $servicesSitemapPages[0] : null;
+        
+//        print_r($servicesSitemapPages[0]);
+//        die();
+        
+        
+        $this->view->enabledSlides = $enabledSlides;
+        $this->view->services = $services;
+        $this->view->sitemapServices = $servicesSitemapPage;
     }
 
     public function indexAction()
