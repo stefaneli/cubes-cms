@@ -37,16 +37,12 @@ class IndexController extends Zend_Controller_Action
                 'status' => Application_Model_DbTable_CmsSitemapPages::STATUS_ENABLED,
                 'type' => 'ServicesPage'
             ),
-            'limit' => 1,
-//            'page' => 1
+            'limit' => 1
         ));
         
         $servicesSitemapPage = !empty($servicesSitemapPages) ? $servicesSitemapPages[0] : null;
         
-//        print_r($servicesSitemapPages[0]);
-//        die();
-        
-        
+
         $this->view->enabledSlides = $enabledSlides;
         $this->view->services = $services;
         $this->view->sitemapServices = $servicesSitemapPage;
