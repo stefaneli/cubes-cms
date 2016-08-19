@@ -42,10 +42,34 @@ class IndexController extends Zend_Controller_Action
         
         $servicesSitemapPage = !empty($servicesSitemapPages) ? $servicesSitemapPages[0] : null;
         
+        
+        $cmsPhotoGalleiesDbTable = new Application_Model_DbTable_CmsPhotoGalleries();
+        
+        $photoGalleries = $cmsPhotoGalleiesDbTable->search(array(
+            'filters' => array(
+                'status' => Application_Model_DbTable_CmsPhotoGalleries::STATUS_ENABLED
+            ),
+            'orders' => array(
+                'order_number' => 'ASC'
+            ),
+            'limit' => 3
+        ));
+        
+        $photoGalleriesSitemapPages = $cmsSitemapDbTable->search(array(
+            'filters' => array(
+                'status' => Application_Model_DbTable_CmsSitemapPages::STATUS_ENABLED,
+                'type' => 'PhotoGalleriesPage'
+            ),
+            'limit' => 1
+        ));
+        
+        $photoGalleriesSitemapPage = !empty($photoGalleriesSitemapPages) ? $photoGalleriesSitemapPages[0] : null;
 
         $this->view->enabledSlides = $enabledSlides;
         $this->view->services = $services;
         $this->view->sitemapServices = $servicesSitemapPage;
+        $this->view->photoGalleries = $photoGalleries;
+        $this->view->photoGalleriesSitemapPage = $photoGalleriesSitemapPage;
     }
 
     public function indexAction()
