@@ -4,8 +4,8 @@ $photoGallery = $this->photoGallery;
 $sitemapPage = $this->sitemapPage;
 $photos = $this->photos;
 
-$this->headTitle($sitemapPage['title']);
 $this->headTitle($photoGallery['title']);
+$this->headTitle($sitemapPage['title']);
 $this->headMeta()->appendName('description', $sitemapPage['description']);
 
 ?>

@@ -5,6 +5,12 @@ class IndexController extends Zend_Controller_Action
 
     public function init()
     {
+        
+    }
+
+    public function indexAction()
+    {
+        
         $cmsIndexSlidesDbTable = new Application_Model_DbTable_CmsIndexSlides();
         
         $enabledSlides = $cmsIndexSlidesDbTable->search(array(
@@ -65,15 +71,8 @@ class IndexController extends Zend_Controller_Action
         
         $photoGalleriesSitemapPage = !empty($photoGalleriesSitemapPages) ? $photoGalleriesSitemapPages[0] : null;
 
-        $this->view->enabledSlides = $enabledSlides;
-        $this->view->services = $services;
-        $this->view->sitemapServices = $servicesSitemapPage;
-        $this->view->photoGalleries = $photoGalleries;
-        $this->view->photoGalleriesSitemapPage = $photoGalleriesSitemapPage;
-    }
 
-    public function indexAction()
-    {
+        
        $cmsClientsDbTable = new Application_Model_DbTable_CmsClients();
         
          
@@ -90,6 +89,11 @@ class IndexController extends Zend_Controller_Action
         $clients = $cmsClientsDbTable->fetchAll($select);
         
         $this->view->clients = $clients;
+        $this->view->enabledSlides = $enabledSlides;
+        $this->view->services = $services;
+        $this->view->sitemapServices = $servicesSitemapPage;
+        $this->view->photoGalleries = $photoGalleries;
+        $this->view->photoGalleriesSitemapPage = $photoGalleriesSitemapPage;
     }
 
     public function testAction(){

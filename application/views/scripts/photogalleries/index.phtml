@@ -17,6 +17,7 @@ $this->headMeta()->appendName('description', $sitemapPage['description']);
 				</div>
 			</div>
 		</div>
+                <?php if($sitemapPage['body']) { ?>
 		<div id="content">
                     <div class="container">
                         
@@ -24,7 +25,7 @@ $this->headMeta()->appendName('description', $sitemapPage['description']);
                         
                     </div>
                 </div>    
-
+                <?php } ?>
 		<div id="content">
 			<div class="container portfolio">
 				<!--Portfolio items-->
